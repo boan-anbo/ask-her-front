@@ -934,9 +934,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         _classCallCheck(this, DataService);
 
         this.http = http; // tslint:disable-next-line:variable-name
-        // private _apiBase = 'http://167.172.212.141:4001'; // remote
 
-        this._apiBase = 'https://www.askjiang.com'; // remote
+        this._apiBase = 'http://167.172.212.141:4001'; // remote
+        // private _apiBase = 'https://www.askjiang.com'; // remote
         // private _apiBase = 'http://localhost:4001'; // local
         // tslint:disable-next-line:variable-name
 
