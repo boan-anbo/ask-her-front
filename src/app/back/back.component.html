@@ -1,0 +1,18 @@
+<mat-list dense>
+  <mat-list-item *ngIf="this.allUploadedAnswers?.length === 0 || !this.allUploadedAnswers">
+    <h3>目前没有新的回答需要审核</h3>
+  </mat-list-item>
+  <mat-list-item *ngFor="let item of this.allUploadedAnswers">
+    <p>
+    {{item.answer?.message}}
+    </p>
+
+    <button mat-icon-button id="approve">
+      <mat-icon (click)="this.approveUploadedAnswer(item)">check</mat-icon>
+    </button>
+    <button mat-icon-button id="delete">
+      <mat-icon (click)="this.deleteUploadedAnswer(item)">delete</mat-icon>
+    </button>
+
+  </mat-list-item>
+</mat-list>

@@ -1,0 +1,231 @@
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {Answer, Entry} from './entry.model';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {DataService} from '../data.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Subject, Subscription} from 'rxjs';
+import {SpeechService} from '../speech.service';
+import {throttleTime} from 'rxjs/operators';
+
+@Component({
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.css']
+})
+export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  public currentEntry: Entry = new Entry();
+  // public currentAnswer: Answer = new Answer();
+  private preLoadedEntry: Entry;
+  public answerPointer = 0;
+  public writingAnswer = false;
+  public inputForm: FormGroup;
+  public inputSubmitLoading = false;
+
+  public alreadyHeard = false;
+  public alreadyUpvoted = {};
+  public loadingEntry = false;
+  private upvoteSubscription: Subscription;
+  private loadingSubscription: Subscription;
+  // to prevent loading questions too frequently
+  private preLoadQuestionSubject: Subject<any> = new Subject();
+
+  // tslint:disable-next-line:max-line-length
+  private uploadAnswerSubscription: Subscription;
+  private iHeardThatSubscription: Subscription;
+  private preloadingSubscription: Subscription;
+
+  constructor(private fb: FormBuilder,
+              private dataService: DataService,
+              private snackbar: MatSnackBar,
+              private speechService: SpeechService) {
+  }
+
+  ngOnInit(): void {
+    // this.preLoadQuestionSubject.pipe(throttleTime(100)).subscribe(() => {
+    //   this.PreLoadRandomQuestion();
+    // });
+    this.LoadRandomQuestion();
+    // this.PreLoadRandomQuestion()
+    // this.LoadAnswer();
+    this.InitializeQuestion();
+    this.InitializeInputForm();
+
+  }
+
+  ngAfterViewInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.preLoadQuestionSubject.unsubscribe();
+  }
+
+  // async uploadAnswer(questionId, message, authorId) {
+  //   this.dataService.uploadAnswer(questionId, message, authorId).subscribe((data) => {
+  //     console.log(data);
+  //   });
+  // }
+
+  async submitHandler() {
+    this.inputSubmitLoading = true;
+    const formValue = this.inputForm.value;
+    try {
+        this.uploadAnswerSubscription = this.dataService.uploadAnswer(this.currentEntry._id, formValue.message, formValue.authorId)
+          .subscribe((data) => {
+        console.log(data);
+        if (data) {
+          this.snackbar.open('你的回答已收录', `稍后更新♥`, {duration: 3000});
+          this.InitializeInputForm();
+          this.ExitWritingMode();
+        } else {
+
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  public setCurrentEntry(entryToUse: Entry): void {
+    if (!this.currentEntry) {
+      this.currentEntry = new Entry();
+    }
+    this.currentEntry = entryToUse;
+  }
+
+
+  IHeardThat() {
+    if (this.alreadyHeard === false) {
+    this.currentEntry.question.heard += 1;
+    this.iHeardThatSubscription = this.dataService.UpvoteQuestion(this.currentEntry._id).subscribe((data) =>
+        console.log(data)
+      );
+    this.alreadyHeard = true;
+    }
+  }
+
+  LetMeAnswer() {
+    this.writingAnswer = true;
+  }
+
+  LeftArrow() {
+    if (this.answerPointer > 0) {
+      this.answerPointer -= 1;
+      // this.LoadAnswer();
+    }
+  }
+
+  RightArrow() {
+    if (this.answerPointer < this.currentEntry.answers.length - 1) {
+      this.answerPointer += 1;
+      // this.LoadAnswer();
+    }
+  }
+
+  IsLastAnswer(): boolean {
+    return (this.answerPointer === this.currentEntry.answers.length - 1) || this.currentEntry.answers.length === 0 ? true : false;
+  }
+
+  IsFirstAnswer(): boolean {
+    return (this.answerPointer === 0) ? true : false;
+  }
+
+  ExitWritingMode(): void {
+    this.writingAnswer = false;
+    this.inputSubmitLoading = false;
+  }
+
+  public IsThereAnswer(): boolean {
+    return this.currentEntry.answers.length === 0 ? false : true;
+  }
+  private InitializeQuestion() {
+    this.alreadyHeard = false;
+    this.ResetAnswerPointer();
+    this.InitializeAnswerUpvote();
+  }
+
+  private InitializeAnswerUpvote() {
+    this.alreadyUpvoted = [];
+  }
+  private ResetAnswerPointer() {
+    this.answerPointer = 0;
+  }
+  private InitializeInputForm() {
+    this.inputForm = this.fb.group({
+      message: '',
+      authorId: '匿名'
+    });
+    this.inputSubmitLoading = false;
+
+  }
+
+  public IUpVoteThat() {
+    if (!this.alreadyUpvoted[this.answerPointer.toString()]) {
+      this.currentEntry.answers[this.answerPointer].upvote += 1;
+      this.upvoteSubscription = this.dataService.UpvoteAnswer(this.currentEntry.answers[this.answerPointer].answerId).subscribe((data) =>
+        console.log(data)
+      );
+      this.alreadyUpvoted[this.answerPointer.toString()] = true;
+    }
+  }
+  public addNewAnswer(message: string, authorId: string) {
+    const newAnswer = new Answer(message, authorId);
+    this.currentEntry.answers.unshift(newAnswer);
+    this.ResetAnswerPointer();
+    // this.LoadAnswer()
+    console.log(this.currentEntry.answers[0].message);
+  }
+
+    public NextQuestion() {
+    // if (this.preLoadedEntry) {
+    //   this.MovePreToCurrentEntry();
+    // }
+    // this.preLoadQuestionSubject.next();
+      this.LoadRandomQuestion();
+      this.InitializeQuestion();
+    this.ResetButtons();
+    }
+
+    private MovePreToCurrentEntry() {
+      this.setCurrentEntry(this.preLoadedEntry);
+      this.preLoadedEntry = null;
+      this.preLoadQuestionSubject.next();
+    }
+
+    private LoadRandomQuestion() {
+      // return this.sampleEntryData.entries[Math.floor(Math.random() * this.sampleEntryData.entries.length)];
+      this.loadingEntry = true;
+      this.speechService.cancelSpeech();
+      this.loadingSubscription = this.dataService.getOneRandomEntry().subscribe((data) => {
+        console.log('Current', data);
+        const entry: Entry = new Entry();
+        Object.assign(entry, data);
+        this.setCurrentEntry(entry);
+        this.speechService.sayQuestion(entry.question.text);
+        this.loadingEntry = false;
+        this.loadingSubscription?.unsubscribe();
+
+      });
+    }
+
+    private PreLoadRandomQuestion() {
+      this.preloadingSubscription = this.dataService.getOneRandomEntry().subscribe((data) => {
+        console.log('Preload', data);
+        const entry: Entry = new Entry();
+        Object.assign(entry, data);
+        this.preLoadedEntry = entry;
+        this.preloadingSubscription?.unsubscribe();
+      });
+    }
+
+    private UnsubscribeAll() {
+      this.upvoteSubscription?.unsubscribe();
+      this.loadingSubscription?.unsubscribe();
+      this.uploadAnswerSubscription?.unsubscribe();
+      this.preloadingSubscription?.unsubscribe();
+    }
+    private ResetButtons() {
+      this.inputSubmitLoading = false;
+    }
+
+}

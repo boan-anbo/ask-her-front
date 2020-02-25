@@ -1,0 +1,11 @@
+#approve {
+  color: yellowgreen;
+}
+
+#delete {
+  color: darkred;
+}
+
+mat-list-item {
+  background-color: black
+}
