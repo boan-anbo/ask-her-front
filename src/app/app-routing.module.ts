@@ -1,0 +1,17 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import {BackComponent} from './back/back.component';
+import {MainComponent} from './main/main.component';
+import {AuthGuard} from './auth/auth-guard.service';
+
+
+const routes: Routes = [
+  { path: ':id/back', component: BackComponent, canActivate: [AuthGuard] },
+  { path: '', component: MainComponent}
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
