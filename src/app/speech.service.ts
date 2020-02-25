@@ -10,7 +10,7 @@ export class SpeechService {
   public sayQuestion(utterance) {
     const utteranceInstance = new SpeechSynthesisUtterance(utterance);
     utteranceInstance.lang = 'zh-Chinese'
-    utteranceInstance.rate = 4;
+    utteranceInstance.rate = 1.5;
     speechSynthesis.speak(utteranceInstance)
   }
   public cancelSpeech() {
