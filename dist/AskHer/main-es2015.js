@@ -45,8 +45,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const routes = [
     // { path: ':id/back', component: BackComponent, canActivate: [AuthGuard] },
-    { path: '/back', component: _back_back_component__WEBPACK_IMPORTED_MODULE_2__["BackComponent"] },
-    { path: '', component: _main_main_component__WEBPACK_IMPORTED_MODULE_3__["MainComponent"] }
+    { path: '', component: _main_main_component__WEBPACK_IMPORTED_MODULE_3__["MainComponent"] },
+    { path: 'back', component: _back_back_component__WEBPACK_IMPORTED_MODULE_2__["BackComponent"] }
 ];
 class AppRoutingModule {
 }
