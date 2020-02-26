@@ -34,6 +34,8 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   private uploadAnswerSubscription: Subscription;
   private iHeardThatSubscription: Subscription;
   private preloadingSubscription: Subscription;
+  private entryStremSubscription: Subscription;
+  private currentEntryPool: Entry[] = [];
 
   constructor(private fb: FormBuilder,
               private dataService: DataService,
@@ -42,18 +44,15 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.preLoadQuestionSubject.pipe(throttleTime(100)).subscribe(() => {
-    //   this.PreLoadRandomQuestion();
-    // });
-    this.LoadRandomQuestion();
-    // this.PreLoadRandomQuestion()
-    // this.LoadAnswer();
+    this.LoadRandomQuestionAndPushToPool()
     this.InitializeQuestion();
     this.InitializeInputForm();
 
   }
 
   ngAfterViewInit(): void {
+    this.KeepEntryPoolFilled();
+
   }
 
   ngOnDestroy(): void {
@@ -177,12 +176,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
     public NextQuestion() {
-    // if (this.preLoadedEntry) {
-    //   this.MovePreToCurrentEntry();
-    // }
-    // this.preLoadQuestionSubject.next();
-      this.LoadRandomQuestion();
-      this.InitializeQuestion();
+    this.SetCurrentEntryAndRefillEntryPoll();
+    this.KeepEntryPoolFilled();
+    this.InitializeQuestion();
     this.ResetButtons();
     }
 
@@ -192,19 +188,34 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       this.preLoadQuestionSubject.next();
     }
 
-    private LoadRandomQuestion() {
-      // return this.sampleEntryData.entries[Math.floor(Math.random() * this.sampleEntryData.entries.length)];
-      this.loadingEntry = true;
-      this.speechService.cancelSpeech();
+    private SetCurrentEntryAndRefillEntryPoll() {
+    if (this.currentEntryPool) {
+      this.setCurrentEntry(this.currentEntryPool[0]);
+      this.currentEntryPool.shift();
+    }
+
+  }
+    private KeepEntryPoolFilled() {
+      if (this.currentEntryPool.length < 5) {
+        for (let i = 0; i < 5 - this.currentEntryPool.length; i++) {
+          this.LoadRandomQuestionAndPushToPool();
+        }
+        // this.loadingSubscription?.unsubscribe();
+      }
+    }
+    private LoadRandomQuestionAndPushToPool() {
+      // this.speechService.cancelSpeech();
       this.loadingSubscription = this.dataService.getOneRandomEntry().subscribe((data) => {
         console.log('Current', data);
         const entry: Entry = new Entry();
         Object.assign(entry, data);
-        this.setCurrentEntry(entry);
-        this.speechService.sayQuestion(entry.question.text);
-        this.loadingEntry = false;
-        this.loadingSubscription?.unsubscribe();
-
+        // this.setCurrentEntry(entry);
+        this.currentEntryPool.push(entry)
+        if (this.currentEntryPool.length === 1) {
+          this.setCurrentEntry(entry);
+        }
+        // this.speechService.sayQuestion(entry.question.text);
+        // this.loadingEntry = false;
       });
     }
 
@@ -227,5 +238,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     private ResetButtons() {
       this.inputSubmitLoading = false;
     }
+
 
 }
