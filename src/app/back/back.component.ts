@@ -23,14 +23,14 @@ export class BackComponent implements OnInit {
 
   async loadAllUploadedAnswers() {
     this.dataService.getAllUpload().subscribe((data) => {
-      console.log(data)
+      // console.log(data)
       this.allUploadedAnswers = data;
     });
   }
 
   async approveUploadedAnswer(item: UploadAnswer) {
     this.dataService.approveUploadedAnswer(item._id).subscribe((data) => {
-      console.log(data);
+      // console.log(data);
       this.loadAllUploadedAnswers();
       this.snackbar.open(`Answer Approved: ${item.answer?.message}`, '', {duration: 2000});
 
@@ -41,7 +41,7 @@ export class BackComponent implements OnInit {
   async deleteUploadedAnswer(item: UploadAnswer) {
       if (window.confirm(`确定要删除吗（可按回车键确认）?\n ${item.answer?.message}`)) {
         this.dataService.deleteUploadedAnswer(item._id).subscribe((data) => {
-          console.log(data);
+          // console.log(data);
           this.loadAllUploadedAnswers();
         });
         this.snackbar.open(`Answer Deleted: ${item.answer?.message}`, 'OK', {duration: 2000});

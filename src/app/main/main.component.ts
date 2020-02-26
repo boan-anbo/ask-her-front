@@ -71,7 +71,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
         this.uploadAnswerSubscription = this.dataService.uploadAnswer(this.currentEntry._id, formValue.message, formValue.authorId)
           .subscribe((data) => {
-        console.log(data);
+        // console.log(data);
         if (data) {
           this.snackbar.open('你的回答已收录', `稍后更新♥`, {duration: 3000});
           this.InitializeInputForm();
@@ -81,7 +81,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 
@@ -97,7 +97,8 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.alreadyHeard === false) {
     this.currentEntry.question.heard += 1;
     this.iHeardThatSubscription = this.dataService.UpvoteQuestion(this.currentEntry._id).subscribe((data) =>
-        console.log(data)
+        // console.log(data)
+      console.log('Like')
       );
     this.alreadyHeard = true;
     }
@@ -162,7 +163,8 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.alreadyUpvoted[this.answerPointer.toString()]) {
       this.currentEntry.answers[this.answerPointer].upvote += 1;
       this.upvoteSubscription = this.dataService.UpvoteAnswer(this.currentEntry.answers[this.answerPointer].answerId).subscribe((data) =>
-        console.log(data)
+        // console.log(data)
+        console.log('Loading')
       );
       this.alreadyUpvoted[this.answerPointer.toString()] = true;
     }
@@ -172,7 +174,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     this.currentEntry.answers.unshift(newAnswer);
     this.ResetAnswerPointer();
     // this.LoadAnswer()
-    console.log(this.currentEntry.answers[0].message);
+    // console.log(this.currentEntry.answers[0].message);
   }
 
     public NextQuestion() {
@@ -209,7 +211,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     private LoadRandomQuestionAndPushToPool() {
       this.loadingSubscription = this.dataService.getOneRandomEntry().subscribe((data) => {
-        console.log('Current', data);
+        // console.log('Current', data);
         const entry: Entry = new Entry();
         Object.assign(entry, data);
         // this.setCurrentEntry(entry);
@@ -223,7 +225,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private PreLoadRandomQuestion() {
       this.preloadingSubscription = this.dataService.getOneRandomEntry().subscribe((data) => {
-        console.log('Preload', data);
+        // console.log('Preload', data);
         const entry: Entry = new Entry();
         Object.assign(entry, data);
         this.preLoadedEntry = entry;
