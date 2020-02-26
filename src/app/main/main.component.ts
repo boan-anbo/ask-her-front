@@ -73,6 +73,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
           .subscribe((data) => {
         // console.log(data);
         if (data) {
+          this.currentEntry.answers.push({ message: formValue.message, authorId: formValue.authorId, upvote: 0, answerId: '' });
           this.snackbar.open('你的回答已收录', `稍后更新♥`, {duration: 3000});
           this.InitializeInputForm();
           this.ExitWritingMode();
