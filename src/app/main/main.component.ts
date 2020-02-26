@@ -13,7 +13,7 @@ import {throttleTime} from 'rxjs/operators';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('endPoint') endPoint: ElementRef;
+  @ViewChild('endPoint', {static: false}) endPoint: ElementRef;
   public currentEntry: Entry = new Entry();
   // public currentAnswer: Answer = new Answer();
   private preLoadedEntry: Entry;
@@ -48,7 +48,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     this.LoadRandomQuestionAndPushToPool();
     this.InitializeQuestion();
     this.InitializeInputForm();
-
   }
 
   ngAfterViewInit(): void {
@@ -244,12 +243,11 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   public ToggleHelp() {
-    this.helpOpen = !this.helpOpen
+    this.helpOpen = !this.helpOpen;
   }
 
   private JumpToEnd() {
-    const target: HTMLElement = this.endPoint.nativeElement;
-    target.scrollIntoView();
-    console.log(target);
+    this.endPoint?.nativeElement.scrollIntoView();
+
   }
 }
