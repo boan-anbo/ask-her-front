@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Answer, Entry} from './entry.model';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DataService} from '../data.service';
@@ -13,7 +13,7 @@ import {throttleTime} from 'rxjs/operators';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  @ViewChild('endPoint') endPoint: ElementRef;
   public currentEntry: Entry = new Entry();
   // public currentAnswer: Answer = new Answer();
   private preLoadedEntry: Entry;
@@ -21,7 +21,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   public writingAnswer = false;
   public inputForm: FormGroup;
   public inputSubmitLoading = false;
-  public helpOpen = true;
+  public helpOpen = false;
 
   public alreadyHeard = false;
   public alreadyUpvoted = {};
@@ -53,7 +53,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.KeepEntryPoolFilled();
-
+    this.JumpToEnd();
   }
 
   ngOnDestroy(): void {
@@ -177,6 +177,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
     public NextQuestion() {
+    this.JumpToEnd();
     this.SetCurrentEntryAndRefillEntryPoll();
     this.KeepEntryPoolFilled();
     this.InitializeQuestion();
@@ -244,5 +245,11 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public ToggleHelp() {
     this.helpOpen = !this.helpOpen
+  }
+
+  private JumpToEnd() {
+    const target: HTMLElement = this.endPoint.nativeElement;
+    target.scrollIntoView();
+    console.log(target);
   }
 }

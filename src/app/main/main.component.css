@@ -187,10 +187,7 @@ mat-card-header {
 #help-card {
   max-width: 80%;
   text-align: center;
-  font-size: 120%;
-  /*position: relative;*/
-  /*display: flex;*/
-  /*flex-direction: column;*/
+  font-size: 110%;
   align-items: center;
   justify-content: center;
 
@@ -198,10 +195,7 @@ mat-card-header {
   left: 0;
   right: 0;
   margin: auto;
-  margin-top: 10%;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: 0;
+  margin-top: 0;
 }
 
 #help-card-icon {
