@@ -52,7 +52,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.KeepEntryPoolFilled();
-    this.JumpToEnd();
+    // this.JumpToEnd();
   }
 
   ngOnDestroy(): void {
@@ -179,7 +179,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
     public NextQuestion() {
-    this.JumpToEnd();
+    // this.JumpToEnd();
     this.SetCurrentEntryAndRefillEntryPoll();
     this.KeepEntryPoolFilled();
     this.InitializeQuestion();
