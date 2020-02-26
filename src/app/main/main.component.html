@@ -104,7 +104,9 @@
 
 
   <mat-grid-tile rowspan="1">
-    <button mat-flat-button id="let-me-answer" color="accent"  (click)="LetMeAnswer()" [disabled]="writingAnswer"><mat-icon>speaker_notes</mat-icon></button>
-    <button mat-flat-button color="accent" (click)="ExitWritingMode()" [disabled]="!writingAnswer"><mat-icon>cancel</mat-icon></button>
+    <button mat-flat-button id="let-me-answer" color="accent" *ngIf="!writingAnswer; else cancelButton" (click)="LetMeAnswer()" [disabled]="writingAnswer"><mat-icon>speaker_notes</mat-icon></button>
+    <ng-template #cancelButton>
+    <button mat-flat-button color="accent" id="cancel-writing-button" (click)="ExitWritingMode()"  [disabled]="!writingAnswer"><mat-icon>cancel</mat-icon></button>
+    </ng-template>
   </mat-grid-tile>
 </mat-grid-list>

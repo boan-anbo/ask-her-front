@@ -10,9 +10,9 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   // tslint:disable-next-line:variable-name
-  private _apiBase = 'http://167.172.212.141:4001'; // remote
-  // private _apiBase = 'https://www.askjiang.com'; // remote
-  // private _apiBase = 'http://localhost:4001'; // local
+  // private _apiBase = 'http://167.172.212.141:4001'; // remote
+  // private _apiBase = 'http://www.askjiang.com'; // remote
+  private _apiBase = 'http://localhost:4001'; // local
   // tslint:disable-next-line:variable-name
   private _listAllUpload = '/uploadanswer/listall';
   // tslint:disable-next-line:variable-name
