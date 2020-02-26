@@ -14,11 +14,11 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> {
-    console.log(state)
-    console.log(next)
+    // console.log(state)
+    // console.log(next)
     return this.dataService.checkAuth(next.params?.id).pipe(
       map(data => {
-        console.log(data)
+        // console.log(data)
         if (data === false) {
           return false;
         } else {
