@@ -12,12 +12,13 @@ import {AuthService} from '../auth/auth.service';
 })
 export class BackComponent implements OnInit {
   public allUploadedAnswers;
+  newUploads: number;
 
   constructor(private dataService: DataService, private snackbar: MatSnackBar, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.loadAllUploadedAnswers();
-    console.log(this.allUploadedAnswers);
+    // console.log(this.allUploadedAnswers);
   }
 
   async loadAllUploadedAnswers() {

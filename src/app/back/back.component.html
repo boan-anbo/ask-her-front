@@ -1,4 +1,7 @@
 <mat-list dense>
+  <mat-list-item>
+    {{ this.newUploads }}
+    <button mat-flat-button (click)="loadAllUploadedAnswers()">刷新</button></mat-list-item>
   <mat-list-item *ngIf="this.allUploadedAnswers?.length === 0 || !this.allUploadedAnswers">
     <h3>目前没有新的回答需要审核</h3>
   </mat-list-item>

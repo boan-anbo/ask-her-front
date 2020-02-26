@@ -21,6 +21,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   public writingAnswer = false;
   public inputForm: FormGroup;
   public inputSubmitLoading = false;
+  public helpOpen = true;
 
   public alreadyHeard = false;
   public alreadyUpvoted = {};
@@ -44,7 +45,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.LoadRandomQuestionAndPushToPool()
+    this.LoadRandomQuestionAndPushToPool();
     this.InitializeQuestion();
     this.InitializeInputForm();
 
@@ -135,7 +136,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public IsThereAnswer(): boolean {
-    return this.currentEntry.answers.length === 0 ? false : true;
+    return (this.currentEntry.answers.length === 0 || !this.currentEntry.question.text) ? false : true;
   }
   private InitializeQuestion() {
     this.alreadyHeard = false;
@@ -190,6 +191,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private SetCurrentEntryAndRefillEntryPoll() {
     if (this.currentEntryPool) {
+
+      // this.speechService.cancelSpeech();
+
       this.setCurrentEntry(this.currentEntryPool[0]);
       this.currentEntryPool.shift();
     }
@@ -204,17 +208,15 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     private LoadRandomQuestionAndPushToPool() {
-      // this.speechService.cancelSpeech();
       this.loadingSubscription = this.dataService.getOneRandomEntry().subscribe((data) => {
         console.log('Current', data);
         const entry: Entry = new Entry();
         Object.assign(entry, data);
         // this.setCurrentEntry(entry);
-        this.currentEntryPool.push(entry)
+        this.currentEntryPool.push(entry);
         if (this.currentEntryPool.length === 1) {
           this.setCurrentEntry(entry);
         }
-        // this.speechService.sayQuestion(entry.question.text);
         // this.loadingEntry = false;
       });
     }
@@ -240,4 +242,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
+  public ToggleHelp() {
+    this.helpOpen = !this.helpOpen
+  }
 }

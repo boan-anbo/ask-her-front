@@ -1,26 +1,37 @@
 <mat-grid-list cols="1" rowHeight="fit">
+  <span *ngIf="!helpOpen else helpPage">
   <mat-grid-tile id="question-tile" rowspan="5">
     <mat-grid-tile-header color="accent">
       <span id="app-title-span">
         <span id="app-title-name">江山娇</span>
         <span>可以回答</span>
       <mat-icon id="app-title-icon">speaker_notes</mat-icon>
-      </span></mat-grid-tile-header>
+      </span>
+      <span id="app-help-span">
+        <button mat-icon-button id="app-help-button" (click)="ToggleHelp()">
+        <mat-icon id="app-help-icon">help</mat-icon>
+          </button>
+      </span>
+    </mat-grid-tile-header>
     <mat-card>
 
-    <mat-card-header>
+    <mat-card-header *ngIf="currentEntry.question.text else noCurrentEntry">
 
-      <mat-card-title id="question-title">
-        {{ currentEntry.question.text }}
+      <mat-card-title id="question-title"> <span id="jiang" *ngIf="currentEntry.question.text">江山娇，</span>{{  currentEntry.question.text }}
       </mat-card-title>
 
       <mat-card-subtitle id="question-author">  {{ this.currentEntry.question.authorId}}</mat-card-subtitle>
 
     </mat-card-header>
-      <mat-card-actions>
+      <mat-card-actions *ngIf="currentEntry.question.text">
+<!--        <button mat-flat-button id="translate-question">translate</button>-->
         <button mat-button (click)="IHeardThat()" id="heard-button"><span id="heard-text">我听过 </span> <span id="heardNumber">{{ this.currentEntry.question.heard}} </span></button>
       </mat-card-actions>
     </mat-card>
+
+    <ng-template #noCurrentEntry>
+      载入中...
+    </ng-template>
 <!--    <mat-grid-tile-footer>Footer</mat-grid-tile-footer>-->
   </mat-grid-tile>
 
@@ -36,23 +47,21 @@
 <!--    <mat-grid-tile-header>Header</mat-grid-tile-header>-->
 
     <button mat-button id="left-arrow" color="accent" (click)="LeftArrow()" *ngIf="IsThereAnswer()" [disabled]="IsFirstAnswer()">
-      <mat-icon class="arrow-button-icon">arrow_left</mat-icon>
+      <mat-icon class="arrow-button-icon" *ngIf="!IsFirstAnswer()">arrow_left</mat-icon>
     </button>
 
 
     <mat-card id="answer-card" *ngIf="IsThereAnswer(); else noAnswer">
-
       <mat-card-header>
         <mat-card-title id="answer-message">
       {{ this.currentEntry.answers[this.answerPointer].message }}
         </mat-card-title>
-        <mat-card-subtitle> {{this.currentEntry.answers[this.answerPointer].authorId}}</mat-card-subtitle>
+        <mat-card-subtitle id="answer-author-id">{{this.currentEntry.answers[this.answerPointer].authorId}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-actions>
         <button mat-flat-button disabled id="answer-index-button"> <span id="answer-index-current"> {{ answerPointer + 1 }}</span>  / <span id="answer-index-total"> {{ this.currentEntry.answers.length }} </span></button>
         <button mat-button (click)="IUpVoteThat()"><span><mat-icon id="favorite">favorite_border</mat-icon> </span> <span id="upVoteNumber">{{ this.currentEntry.answers[this.answerPointer].upvote}} </span></button>
       </mat-card-actions>
-
 
     </mat-card>
 
@@ -60,7 +69,7 @@
     <ng-template #noAnswer><p id="no-answer">无人回答</p></ng-template>
 
     <button mat-button id="right-arrow" color="accent" *ngIf="IsThereAnswer();" [disabled]="IsLastAnswer()" (click)="RightArrow()">
-      <mat-icon class="arrow-button-icon">arrow_right</mat-icon>
+      <mat-icon class="arrow-button-icon" *ngIf="!IsLastAnswer()">arrow_right</mat-icon>
     </button>
 
 
@@ -104,9 +113,36 @@
 
 
   <mat-grid-tile rowspan="1">
-    <button mat-flat-button id="let-me-answer" color="accent" *ngIf="!writingAnswer; else cancelButton" (click)="LetMeAnswer()" [disabled]="writingAnswer"><mat-icon>speaker_notes</mat-icon></button>
+    <button mat-flat-button id="let-me-answer" color="accent" *ngIf="!writingAnswer; else cancelButton" matTooltip="我来回答" (click)="LetMeAnswer()" [disabled]="writingAnswer"><mat-icon>speaker_notes</mat-icon></button>
     <ng-template #cancelButton>
     <button mat-flat-button color="accent" id="cancel-writing-button" (click)="ExitWritingMode()"  [disabled]="!writingAnswer"><mat-icon>cancel</mat-icon></button>
     </ng-template>
   </mat-grid-tile>
+  </span>
+
+  <ng-template #helpPage id="help-template">
+    <mat-card id="help-card">
+      <mat-card-header><mat-icon id="help-card-icon">help</mat-icon></mat-card-header>
+      <mat-card-content>
+      <span id="help-card-content">
+       <br>
+        <p>一份不会404的中国女性经验的永久记录</p>
+      <p>原始问题来自微博用户“为什么它永无止境”的一条已经被删除的微博下方评论</p>
+        <br>
+        <p>按APP下方的按钮添加你的回答</p>
+        <p>你的回答会经过女性志愿者审核</p>
+        <p>不会记录你的个人信息。可以匿名，也可以用你的id。</p>
+        <p>所有问题和回答数据都会定期公开</p>
+        <br>
+        <p>希望这是一个提高大众女性权利意识的契机</p>
+        <p>希望<span id="help-card-name-tag">江山娇</span>以后不需要再回答这些问题</p>
+        <br>
+        <p>2020/2/26</p>
+        </span>
+      </mat-card-content>
+    <mat-card-actions>
+    <button mat-flat-button (click)="ToggleHelp()" color="accent" id="help-card-action">返回</button>
+    </mat-card-actions>
+    </mat-card>
+  </ng-template>
 </mat-grid-list>
