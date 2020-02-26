@@ -8,8 +8,116 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style type="text/css">
+  body, html {
+    height: 100%;
+    background: #303030;
+    color: aliceblue;
+    overflow: hidden;
+  }
+  .app-loading {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .app-loading .spinner {
+    height: 200px;
+    width: 200px;
+    animation: rotate 2s linear infinite;
+    /*transform-origin: center center;*/
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .app-loading .spinner .path {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite;
+    stroke-linecap: round;
+    stroke: #ddd;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -35px;
+    }
+    100% {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -124px;
+    }
+  }
+
+  #quote {
+    max-width: 80%;
+    align-items: center;
+    justify-content: center;
+    top: 10%;
+    left: 10%;
+    position: absolute;
+    font-family: initial;
+  }
+  #quote-text {
+    line-height: 150%;
+  }
+  #name-tag {
+    color: #f44336;
+  }
+  #rest-of-name {
+    color: #b0bec5;
+  }
+  #quote-author {
+    left: 80%;
+    position: absolute;
+    color: #b0bec5;
+
+  }
+  #app-title {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 120%;
+    position: center;
+  }
+</style>
 </head>
 <body >
-  <app-root></app-root>
+  <app-root>
+    <div id="quote">
+      <p id="quote-text">
+      江山娇，如果这条微博被删掉，你作为女性，是不是就会遗忘一个女性曾或将遭受的一切？
+      </p>
+      <span id="quote-author">——微博网友</span>
+
+    </div>
+    <div class="app-loading">
+      <div class="logo"></div>
+      <svg class="spinner" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+        <span id="app-title"><p id="name-tag">江山娇</p><p id="rest-of-name">可以回答</p></span>
+      </svg>
+    </div>
+
+
+
+  </app-root>
 </body>
 </html>
