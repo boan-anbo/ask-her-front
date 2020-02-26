@@ -67,7 +67,7 @@
     </mat-card>
 
 
-    <ng-template #noAnswer><p id="no-answer">无人回答</p></ng-template>
+    <ng-template #noAnswer><p id="no-answer">无人回答<br>按下方按钮添加你的回答</p></ng-template>
 
     <button mat-button id="right-arrow" color="accent" *ngIf="IsThereAnswer();" [disabled]="IsLastAnswer()" (click)="RightArrow()">
       <mat-icon class="arrow-button-icon" *ngIf="!IsLastAnswer()">arrow_right</mat-icon>
