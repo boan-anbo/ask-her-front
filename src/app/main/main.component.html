@@ -61,7 +61,7 @@
       </mat-card-header>
       <mat-card-actions>
         <button mat-flat-button disabled id="answer-index-button"> <span id="answer-index-current"> {{ answerPointer + 1 }}</span>  / <span id="answer-index-total"> {{ this.currentEntry.answers.length }} </span></button>
-        <button mat-button (click)="IUpVoteThat()"><span><mat-icon id="favorite">favorite_border</mat-icon> </span> <span id="upVoteNumber">{{ this.currentEntry.answers[this.answerPointer].upvote}} </span></button>
+        <button mat-button (click)="IUpVoteThat()" [disabled]="this.currentEntry.answers[this.answerPointer].answerId === ''"><span><mat-icon id="favorite">favorite_border</mat-icon> </span> <span id="upVoteNumber">{{ this.currentEntry.answers[this.answerPointer].upvote}} </span></button>
       </mat-card-actions>
 
     </mat-card>
