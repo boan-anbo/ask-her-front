@@ -7,16 +7,16 @@
         <span>可以回答</span>
       <mat-icon id="app-title-icon">speaker_notes</mat-icon>
       </span>
-      <span id="app-speech-span">
-        <button mat-icon-button id="app-speech-mute-button" *ngIf="!this.speechModeOn; else speechOn" (click)="ToggleSpeech()">
-        朗读关<mat-icon id="app-speech-mute-icon" >volume_mute</mat-icon>
-      </button>
-        <ng-template #speechOn>
-      <button mat-icon-button id="app-speech-unmute-button" (click)="ToggleSpeech()">
-        朗读开<mat-icon id="app-speech-unmuteicon">volume_up</mat-icon>
-      </button>
-</ng-template>
-      </span>
+<!--      <span id="app-speech-span">-->
+<!--        <button mat-icon-button id="app-speech-mute-button" *ngIf="!this.speechModeOn; else speechOn" (click)="ToggleSpeech()">-->
+<!--        朗读关<mat-icon id="app-speech-mute-icon" >volume_mute</mat-icon>-->
+<!--      </button>-->
+<!--        <ng-template #speechOn>-->
+<!--      <button mat-icon-button id="app-speech-unmute-button" (click)="ToggleSpeech()">-->
+<!--        朗读开<mat-icon id="app-speech-unmuteicon">volume_up</mat-icon>-->
+<!--      </button>-->
+<!--</ng-template>-->
+<!--      </span>-->
       <span id="app-help-span">
         <button mat-icon-button id="app-help-button" (click)="ToggleHelp()">
         <mat-icon id="app-help-icon">help</mat-icon>
