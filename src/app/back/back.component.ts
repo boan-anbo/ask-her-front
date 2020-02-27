@@ -26,6 +26,7 @@ export class BackComponent implements OnInit {
   }
 
   async loadAllUploadedAnswers() {
+    this.allUploadedAnswers = [];
     this.dataService.getAllUpload().subscribe((data: []) => {
       console.log(data)
 
