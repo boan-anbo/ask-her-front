@@ -67,7 +67,7 @@
     </mat-card>
 
 
-    <ng-template #noAnswer><p id="no-answer">无人回答<br>按下方按钮添加你的回答</p></ng-template>
+    <ng-template #noAnswer><p id="no-answer">无人回答<br>按下方按钮添加你的回答<br>可能需要向上滑动</p></ng-template>
 
     <button mat-button id="right-arrow" color="accent" *ngIf="IsThereAnswer();" [disabled]="IsLastAnswer()" (click)="RightArrow()">
       <mat-icon class="arrow-button-icon" *ngIf="!IsLastAnswer()">arrow_right</mat-icon>
@@ -94,7 +94,7 @@
       <br>
       <mat-form-field class="input-full-width" id="inputId">
         <mat-label>ID</mat-label>
-        <input matInput #id maxlength="20" autocomplete="on" formControlName="authorId" value="匿名">
+        <input matInput #id maxlength="20" autocomplete="on" formControlName="authorId" value="江山娇">
         <mat-hint align="start"><strong></strong> </mat-hint>
         <mat-hint  align="end">{{id.value.length}} / 20字符</mat-hint>
       </mat-form-field>
