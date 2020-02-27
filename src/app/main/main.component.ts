@@ -154,7 +154,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   private InitializeInputForm() {
     this.inputForm = this.fb.group({
       message: '',
-      authorId: '匿名'
+      authorId: '江山娇'
     });
     this.inputSubmitLoading = false;
 
