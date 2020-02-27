@@ -71,7 +71,7 @@
 
 
     <mat-card id="answer-card" *ngIf="IsThereAnswer(); else noAnswer">
-      <mat-card-header>
+      <mat-card-header id="answer-header">
         <mat-card-title id="answer-message">
       {{ this.currentEntry.answers[this.answerPointer].message }}
         </mat-card-title>
