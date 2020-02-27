@@ -1,11 +1,31 @@
 #approve {
   color: yellowgreen;
+  float: left;
 }
 
 #delete {
   color: darkred;
+  float: right;
 }
 
-mat-list-item {
-  background-color: black
+mat-grid-tile {
+  position: absolute;
+  left: 0;
+}
+
+#header {
+  height: 50px;
+}
+
+#refresh-button {
+  color: white;
+  background: deepskyblue;
+  width: 200px;
+  /*position: absolute;*/
+  /*float: right;*/
+
+}
+#refresh-div {
+  justify-content: center;
+  text-align: center;
 }

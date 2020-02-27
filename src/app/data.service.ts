@@ -31,9 +31,14 @@ export class DataService {
   private _upvoteAnswer = '/upvote/answer/'
   // tslint:disable-next-line:variable-name
   private _upvoteQuestion = '/upvote/question/'
+  private _findOneEntryById = '/entry/find/id/'
 
   private UpVoteAnswerUrl(answerId: string): string {
     return this._apiBase + this._upvoteAnswer + answerId;
+  }
+
+  private FindOneEntryByIdUrl(questionId: string) {
+    return this._apiBase + this._findOneEntryById + questionId;
   }
 
   private UpvoteQuestionUrl(questionId: string): string {
@@ -81,5 +86,7 @@ export class DataService {
     return this.http.get(this.UpvoteQuestionUrl(questionId));
   }
 
-
+  public FindOneEntryById(questionId: string) {
+    return this.http.get(this.FindOneEntryByIdUrl(questionId));
+  }
 }
