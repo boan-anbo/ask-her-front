@@ -140,7 +140,7 @@ mat-card-subtitle {
 
 #app-title-span {
   position: absolute;
-  left: 20%;
+  left: 15%;
 }
 
 #app-title-name {
@@ -183,6 +183,11 @@ mat-card-header {
   position: absolute;
   right: 5%;
 }
+#app-speech-span {
+  position: absolute;
+  right: 25%;
+  color: #b0bec5;
+}
 
 #help-card {
   max-width: 80%;
@@ -212,4 +217,12 @@ mat-card-header {
 }
 #help-card-content {
   line-height: 120%;
+}
+
+.history-nav-button {
+  color: #b0bec5;
+}
+
+#help-shortcut {
+  color: #b0bec5;
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Answer, Entry} from './entry.model';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DataService} from '../data.service';
@@ -37,7 +37,12 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   private preloadingSubscription: Subscription;
   private entryStremSubscription: Subscription;
   private currentEntryPool: Entry[] = [];
-
+  private historyEntryPool: Entry[] = [];
+  public historyModeOn = false;
+  // notice I'm unshift past entries into the array. So the last element is the oldest.
+  private historyQuestionPointer = 0;
+  private _temporaryCurrentEntry: Entry = new Entry();
+  public speechModeOn = false;
   constructor(private fb: FormBuilder,
               private dataService: DataService,
               private snackbar: MatSnackBar,
@@ -64,6 +69,37 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   //     console.log(data);
   //   });
   // }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    console.log(event);
+    if (!this.writingAnswer) {
+      switch (event.code) {
+        case 'ArrowLeft':
+          if (!this.IsFirstAnswer()) {
+            this.LeftArrow();
+          }
+          break;
+        case 'ArrowRight':
+          if (!this.IsLastAnswer()) {
+            this.RightArrow();
+          }
+          break;
+        case 'Space':
+          this.NextQuestion();
+          break;
+        case 'ArrowUp':
+          if (!this.ReachedEndOfHistory()) {
+            this.PreviousQuestion();
+          }
+          break;
+        case 'ArrowDown':
+          if (this.historyModeOn) {
+            this.SubsequentQuestion();
+          }
+      }
+    }
+  }
 
   async submitHandler() {
     this.inputSubmitLoading = true;
@@ -113,12 +149,14 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.answerPointer > 0) {
       this.answerPointer -= 1;
       // this.LoadAnswer();
+      this.ReadAnswer();
     }
   }
 
   RightArrow() {
     if (this.answerPointer < this.currentEntry.answers.length - 1) {
       this.answerPointer += 1;
+      this.ReadAnswer();
       // this.LoadAnswer();
     }
   }
@@ -180,10 +218,67 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public NextQuestion() {
     // this.JumpToEnd();
+    if (this.speechModeOn) {
+      this.speechService.cancelSpeech();
+    }
+    this.ResetHistoryMode();
     this.SetCurrentEntryAndRefillEntryPoll();
     this.KeepEntryPoolFilled();
     this.InitializeQuestion();
     this.ResetButtons();
+    }
+
+    private ResetHistoryMode() {
+    if (this.historyModeOn) {
+    this.historyModeOn = false;
+    this.historyQuestionPointer = 0;
+    this.setCurrentEntry(this._temporaryCurrentEntry);
+    }
+    }
+    public PreviousQuestion() {
+
+    // if it's not in history mode yet, then start with 0
+      if (this.historyEntryPool.length !== 0) {
+        if (!this.historyModeOn) {
+          this._temporaryCurrentEntry = this.currentEntry;
+          this.historyQuestionPointer = 0;
+          this.setCurrentEntry(this.historyEntryPool[this.historyQuestionPointer]);
+        } else {
+          if (this.historyQuestionPointer < this.historyEntryPool.length - 1) {
+            this.historyQuestionPointer += 1;
+          }
+          this.setCurrentEntry(this.historyEntryPool[this.historyQuestionPointer]);
+          }
+        this.historyModeOn = true;
+      }
+      this.ReadAnswer();
+    }
+
+    public ReachedEndOfHistory(): boolean {
+      if (this.historyEntryPool.length === 0 || (this.historyModeOn === true) && this.historyQuestionPointer === this.historyEntryPool.length - 1 ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+
+
+    public SubsequentQuestion() {
+      // console.log(this.historyEntryPool);
+      // console.log(this.currentEntryPool);
+      // console.log(this.currentEntry);
+
+      if (this.historyModeOn === true) {
+      if (this.historyQuestionPointer === 0) {
+        this.historyModeOn = false;
+        this.setCurrentEntry(this._temporaryCurrentEntry);
+      } else {
+        this.historyQuestionPointer -= 1;
+        this.setCurrentEntry(this.historyEntryPool[this.historyQuestionPointer]);
+      }
+    }
+      this.ReadAnswer();
     }
 
     private MovePreToCurrentEntry() {
@@ -194,13 +289,17 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private SetCurrentEntryAndRefillEntryPoll() {
     if (this.currentEntryPool) {
-
-      // this.speechService.cancelSpeech();
-
-      this.setCurrentEntry(this.currentEntryPool[0]);
-      this.currentEntryPool.shift();
+        // this.speechService.cancelSpeech();
+        if (this.currentEntry.question.text) {
+          this.historyEntryPool.unshift(this.currentEntry);
+        }
+        if (this.currentEntry?._id === this.currentEntryPool[0]._id) {
+          this.currentEntryPool.shift();
+        }
+        this.setCurrentEntry(this.currentEntryPool[0]);
+        this.ReadAnswer();
+        this.currentEntryPool.shift();
     }
-
   }
     private KeepEntryPoolFilled() {
       if (this.currentEntryPool.length < 5) {
@@ -220,7 +319,6 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.currentEntryPool.length === 1) {
           this.setCurrentEntry(entry);
         }
-        // this.loadingEntry = false;
       });
     }
 
@@ -252,5 +350,18 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   private JumpToEnd() {
     this.endPoint?.nativeElement.scrollIntoView();
 
+  }
+
+
+  public ToggleSpeech() {
+    this.speechService.cancelSpeech();
+    this.speechModeOn = !this.speechModeOn;
+  }
+
+  private ReadAnswer() {
+    if (this.speechModeOn) {
+      this.speechService.cancelSpeech();
+      this.speechService.sayThis(this.currentEntry.answers[this.answerPointer]?.message);
+    }
   }
 }

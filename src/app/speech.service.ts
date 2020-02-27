@@ -7,11 +7,11 @@ export class SpeechService {
 
   constructor() { }
 
-  public sayQuestion(utterance) {
+  public sayThis(utterance) {
     const utteranceInstance = new SpeechSynthesisUtterance(utterance);
     utteranceInstance.lang = 'zh-Chinese'
     utteranceInstance.rate = 1.5;
-    speechSynthesis.speak(utteranceInstance)
+    speechSynthesis.speak(utteranceInstance);
   }
   public cancelSpeech() {
     speechSynthesis.cancel()

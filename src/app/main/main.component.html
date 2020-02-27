@@ -7,6 +7,16 @@
         <span>可以回答</span>
       <mat-icon id="app-title-icon">speaker_notes</mat-icon>
       </span>
+      <span id="app-speech-span">
+        <button mat-icon-button id="app-speech-mute-button" *ngIf="!this.speechModeOn; else speechOn" (click)="ToggleSpeech()">
+        朗读关<mat-icon id="app-speech-mute-icon" >volume_mute</mat-icon>
+      </button>
+        <ng-template #speechOn>
+      <button mat-icon-button id="app-speech-unmute-button" (click)="ToggleSpeech()">
+        朗读开<mat-icon id="app-speech-unmuteicon">volume_up</mat-icon>
+      </button>
+</ng-template>
+      </span>
       <span id="app-help-span">
         <button mat-icon-button id="app-help-button" (click)="ToggleHelp()">
         <mat-icon id="app-help-icon">help</mat-icon>
@@ -26,19 +36,27 @@
     </mat-card-header>
       <mat-card-actions *ngIf="currentEntry.question.text">
 <!--        <button mat-flat-button id="translate-question">translate</button>-->
+
         <button mat-button (click)="IHeardThat()" id="heard-button"><span id="heard-text">我听过 </span> <span id="heardNumber">{{ this.currentEntry.question.heard}} </span></button>
       </mat-card-actions>
+
     </mat-card>
 
     <ng-template #noCurrentEntry>
       载入中...
     </ng-template>
 <!--    <mat-grid-tile-footer>Footer</mat-grid-tile-footer>-->
+
+
+
   </mat-grid-tile>
 
 
   <mat-grid-tile rowspan="1">
+<button mat-icon-button class="history-nav-button" id="previous-history-entry" (click)="PreviousQuestion()" [disabled]="ReachedEndOfHistory()"><mat-icon>arrow_back</mat-icon></button>
+
     <button mat-fab id="next-answer" color="warn"  (click)="NextQuestion()" [disabled]="loadingEntry || writingAnswer"><mat-icon>face</mat-icon></button>
+        <button mat-icon-button class="history-nav-button" id="subsequent-history-entry" (click)="SubsequentQuestion()" [disabled]="!this.historyModeOn"><mat-icon>arrow_forward</mat-icon></button>
 
   </mat-grid-tile>
 
@@ -145,6 +163,13 @@
         <p>希望未来的<span id="help-card-name-tag">江山娇</span>不需要再回答这些问题</p>
         <br>
         <p>2020/2/26</p>
+        <br>
+        <span id="help-shortcut">
+        <p>键盘快捷键</p>
+        <p>↑  /  ↓ : 前一个 / 后一个问题</p>
+        <p>← / → : 上一个 / 下一个答案</p>
+        <p>空格键 : 随机抽取一个新问题</p>
+        </span>
         </span>
       </mat-card-content>
     <mat-card-actions>
