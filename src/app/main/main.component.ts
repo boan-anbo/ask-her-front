@@ -239,6 +239,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // if it's not in history mode yet, then start with 0
       if (this.historyEntryPool.length !== 0) {
+        this.answerPointer = 0;
         if (!this.historyModeOn) {
           this._temporaryCurrentEntry = this.currentEntry;
           this.historyQuestionPointer = 0;
@@ -270,6 +271,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       // console.log(this.currentEntry);
 
       if (this.historyModeOn === true) {
+      this.answerPointer = 0;
       if (this.historyQuestionPointer === 0) {
         this.historyModeOn = false;
         this.setCurrentEntry(this._temporaryCurrentEntry);
@@ -277,8 +279,10 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
         this.historyQuestionPointer -= 1;
         this.setCurrentEntry(this.historyEntryPool[this.historyQuestionPointer]);
       }
-    }
+
       this.ReadAnswer();
+    }
+
     }
 
     private MovePreToCurrentEntry() {
