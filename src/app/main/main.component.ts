@@ -218,9 +218,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public NextQuestion() {
     // this.JumpToEnd();
-    if (this.speechModeOn) {
-      this.speechService.cancelSpeech();
-    }
+    // if (this.speechModeOn) {
+    //   this.speechService.cancelSpeech();
+    // }
     this.ResetHistoryMode();
     this.SetCurrentEntryAndRefillEntryPoll();
     this.KeepEntryPoolFilled();
@@ -363,9 +363,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private ReadAnswer() {
-    if (this.speechModeOn) {
-      this.speechService.cancelSpeech();
-      this.speechService.sayThis(this.currentEntry.answers[this.answerPointer]?.message);
-    }
+    // if (this.speechModeOn) {
+    //   this.speechService.cancelSpeech();
+    //   this.speechService.sayThis(this.currentEntry.answers[this.answerPointer]?.message);
+    // }
   }
 }
