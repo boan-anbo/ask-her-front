@@ -43,18 +43,23 @@ textarea,input {
 
 #right-arrow {
   margin-left: 0px;
+  padding-left: 0;
 }
 .arrow-button-icon {
-  font-size: 400%;
+  font-size: 300%;
   margin: 0px;
 
 }
 
 #answer-card {
-  min-width: 50%;
-  max-width: 85%;
+  min-width: 70%;
+  max-width: 80%;
   margin-right: 0px;
   border-right: 0px;
+  margin-left: 0;
+  padding-left: 0;
+  padding-right: 0;
+
 }
 #favorite {
   font-size: 90%;
@@ -113,6 +118,7 @@ mat-card {
 mat-card-title {
   max-width: border-box;
   word-break: break-all;
+
 }
 
 #question-title {
@@ -127,6 +133,10 @@ mat-card-title {
   /*color: #E91E63;*/
   font-size: 80%;
   color: #f44336;
+  max-width: 95%;
+  min-width: 200px;
+  margin-left: 0;
+  margin-rgith: 0;
 }
 
 mat-card-subtitle {
@@ -173,6 +183,7 @@ mat-card-header {
 
 #answer-author-id {
   width: fit-content;
+  padding-right: 0;
 }
 
 #app-help-button {
@@ -226,3 +237,4 @@ mat-card-header {
 #help-shortcut {
   color: #b0bec5;
 }
+
