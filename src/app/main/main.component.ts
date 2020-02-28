@@ -13,15 +13,31 @@ import {throttleTime} from 'rxjs/operators';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
+  public totalEntryCount: number;
+
+
+  constructor(private fb: FormBuilder,
+              private dataService: DataService,
+              private snackbar: MatSnackBar,
+              private speechService: SpeechService) {
+  }
   @ViewChild('endPoint', {static: false}) endPoint: ElementRef;
+
   public currentEntry: Entry = new Entry();
   // public currentAnswer: Answer = new Answer();
   private preLoadedEntry: Entry;
   public answerPointer = 0;
+  // status toggle
   public writingAnswer = false;
+  public addingQuestionModeOn = false;
+  public historyModeOn = false;
+  public helpOpen = false;
+  //
   public inputForm: FormGroup;
   public inputSubmitLoading = false;
-  public helpOpen = false;
+  public questionInputForm: FormGroup;
+  public questionInputSubmitLoading = false;
+
 
   public alreadyHeard = false;
   public alreadyUpvoted = {};
@@ -33,26 +49,30 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // tslint:disable-next-line:max-line-length
   private uploadAnswerSubscription: Subscription;
+  private uploadQuestionSubscription: Subscription;
   private iHeardThatSubscription: Subscription;
   private preloadingSubscription: Subscription;
   private entryStremSubscription: Subscription;
   private currentEntryPool: Entry[] = [];
   private historyEntryPool: Entry[] = [];
-  public historyModeOn = false;
   // notice I'm unshift past entries into the array. So the last element is the oldest.
   private historyQuestionPointer = 0;
   private _temporaryCurrentEntry: Entry = new Entry();
-  public speechModeOn = false;
-  constructor(private fb: FormBuilder,
-              private dataService: DataService,
-              private snackbar: MatSnackBar,
-              private speechService: SpeechService) {
-  }
+
+  // async uploadAnswer(questionId, message, authorId) {
+  //   this.dataService.uploadAnswer(questionId, message, authorId).subscribe((data) => {
+  //     console.log(data);
+  //   });
+  // }
+
+
 
   ngOnInit(): void {
     this.LoadRandomQuestionAndPushToPool();
     this.InitializeQuestion();
     this.InitializeInputForm();
+    this.InitializeQuestionInputForm();
+    this.GetEntryAnswerCount();
   }
 
   ngAfterViewInit(): void {
@@ -64,16 +84,10 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     this.preLoadQuestionSubject.unsubscribe();
   }
 
-  // async uploadAnswer(questionId, message, authorId) {
-  //   this.dataService.uploadAnswer(questionId, message, authorId).subscribe((data) => {
-  //     console.log(data);
-  //   });
-  // }
-
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    console.log(event);
-    if (!this.writingAnswer) {
+    // console.log(event);
+    if (!this.writingAnswer && !this.addingQuestionModeOn) {
       switch (event.code) {
         case 'ArrowLeft':
           if (!this.IsFirstAnswer()) {
@@ -97,30 +111,11 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
           if (this.historyModeOn) {
             this.SubsequentQuestion();
           }
+          break;
       }
     }
   }
 
-  async submitHandler() {
-    this.inputSubmitLoading = true;
-    const formValue = this.inputForm.value;
-    try {
-        this.uploadAnswerSubscription = this.dataService.uploadAnswer(this.currentEntry._id, formValue.message, formValue.authorId)
-          .subscribe((data) => {
-        // console.log(data);
-        if (data) {
-          this.currentEntry.answers.push({ message: formValue.message, authorId: formValue.authorId, upvote: 0, answerId: '' });
-          this.snackbar.open('你的回答已收录', `稍后更新♥`, {duration: 3000});
-          this.InitializeInputForm();
-          this.ExitWritingMode();
-        } else {
-
-        }
-      });
-    } catch (err) {
-      // console.log(err);
-    }
-  }
 
   public setCurrentEntry(entryToUse: Entry): void {
     if (!this.currentEntry) {
@@ -143,6 +138,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
   LetMeAnswer() {
     this.writingAnswer = true;
+    this.addingQuestionModeOn = false;
   }
 
   LeftArrow() {
@@ -169,9 +165,14 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     return (this.answerPointer === 0) ? true : false;
   }
 
-  ExitWritingMode(): void {
+  public ExitWritingMode(): void {
     this.writingAnswer = false;
     this.inputSubmitLoading = false;
+  }
+
+  public ExitAddQuestionMode(): void {
+    this.addingQuestionModeOn = false;
+    this.questionInputSubmitLoading;
   }
 
   public IsThereAnswer(): boolean {
@@ -196,6 +197,14 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.inputSubmitLoading = false;
 
+  }
+
+  private InitializeQuestionInputForm() {
+      this.questionInputForm = this.fb.group({
+        text: '江山娇，',
+        authorId: ''
+      });
+      this.questionInputSubmitLoading = false;
   }
 
   public IUpVoteThat() {
@@ -340,6 +349,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
       this.upvoteSubscription?.unsubscribe();
       this.loadingSubscription?.unsubscribe();
       this.uploadAnswerSubscription?.unsubscribe();
+      this.uploadQuestionSubscription?.unsubscribe();
       this.preloadingSubscription?.unsubscribe();
     }
     private ResetButtons() {
@@ -357,15 +367,80 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  public ToggleSpeech() {
-    this.speechService.cancelSpeech();
-    this.speechModeOn = !this.speechModeOn;
+  ToggleAddQuestionMode() {
+    this.addingQuestionModeOn = !this.addingQuestionModeOn;
+    if (this.addingQuestionModeOn === true) {
+      this.writingAnswer = false;
+      this.helpOpen = false;
+    }
   }
-
   private ReadAnswer() {
     // if (this.speechModeOn) {
     //   this.speechService.cancelSpeech();
     //   this.speechService.sayThis(this.currentEntry.answers[this.answerPointer]?.message);
     // }
   }
+
+  private CleanQuestionText(text: string): string {
+    return text.replace(/^[江姜][山春][蛟娇矫姣较][\s,，:：!！]?/gm, '').trim();
+  }
+
+  async QuestionSubmitHandler() {
+    this.questionInputSubmitLoading = true;
+    const formValue = this.questionInputForm.value;
+    // console.log(this.CleanQuestionText(formValue.text));
+    // console.log(this.questionInputForm.value.authorId);
+    this.InitializeQuestionInputForm();
+    this.ExitAddQuestionMode();
+
+    try {
+      this.uploadQuestionSubscription = this.dataService.uploadQuestion(this.CleanQuestionText(formValue.text), formValue.authorId)
+        .subscribe((data) => {
+          // console.log(data);
+          if (data) {
+            this.snackbar.open('你的提问已收录', `稍后更新♥`, {duration: 4000});
+            this.InitializeQuestionInputForm();
+            this.ExitAddQuestionMode();
+          } else {
+
+          }
+        });
+    } catch (err) {
+      // console.log(err);
+    }
+  }
+
+
+  async submitHandler() {
+    this.inputSubmitLoading = true;
+    const formValue = this.inputForm.value;
+    try {
+      this.uploadAnswerSubscription = this.dataService.uploadAnswer(this.currentEntry._id, formValue.message, formValue.authorId)
+        .subscribe((data) => {
+          // console.log(data);
+          if (data) {
+            this.currentEntry.answers.push({ message: formValue.message, authorId: formValue.authorId, upvote: 0, answerId: '' });
+            this.snackbar.open('你的回答已收录', `稍后更新♥`, {duration: 3000});
+            this.InitializeInputForm();
+            this.ExitWritingMode();
+          } else {
+
+          }
+        });
+    } catch (err) {
+      // console.log(err);
+    }
+  }
+
+
+  public IsTextEmpty(inputText: string): boolean {
+    return this.CleanQuestionText(inputText).length === 0 ? true : false;
+  }
+
+  async GetEntryAnswerCount() {
+    this.dataService.GetEntryCount().subscribe((data: string) => {
+      this.totalEntryCount = parseInt(data);
+    });
+  }
+
 }

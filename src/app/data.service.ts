@@ -7,6 +7,8 @@ import {HttpClient} from '@angular/common/http';
 })
 export class DataService {
 
+
+
   constructor(private http: HttpClient) { }
 
   // tslint:disable-next-line:variable-name
@@ -14,16 +16,7 @@ export class DataService {
   // private _apiBase = 'http://www.askjiang.com'; // remote
   // private _apiBase = 'http://localhost:4001'; // local
   // tslint:disable-next-line:variable-name
-  private _listAllUpload = '/uploadanswer/listall';
-  // tslint:disable-next-line:variable-name
-  private _deleteUploadedAnswer = '/uploadanswer/delete/'
-  // tslint:disable-next-line:variable-name
-  private _approveUploadedAnswer = '/uploadanswer/approve/'
-  // tslint:disable-next-line:variable-name
-  private _backEntry = '/entry/back/'
-  // tslint:disable-next-line:variable-name
-  private _listAllEntries = '/entry/listall'
-  // tslint:disable-next-line:variable-name
+
   private _getRandomEntry = '/entry/find/random'
   // tslint:disable-next-line:variable-name
   private _uploadAnswer = '/uploadanswer/'
@@ -31,7 +24,13 @@ export class DataService {
   private _upvoteAnswer = '/upvote/answer/'
   // tslint:disable-next-line:variable-name
   private _upvoteQuestion = '/upvote/question/'
+  // tslint:disable-next-line:variable-name
   private _findOneEntryById = '/entry/find/id/'
+  private _uploadQuestion = '/uploadquestion/upload'
+  // tslint:disable-next-line:variable-name
+  private _entryCount = '/entry/count'
+
+
 
   private UpVoteAnswerUrl(answerId: string): string {
     return this._apiBase + this._upvoteAnswer + answerId;
@@ -45,38 +44,32 @@ export class DataService {
     return this._apiBase + this._upvoteQuestion + questionId;
   }
 
-  private uploadQuestionUrl(questionId: string): string {
+  private uploadAnswerUrl(questionId: string): string {
     return this._apiBase + this._uploadAnswer + questionId;
   }
-  public getAllUpload() {
-    return this.http.get(this._apiBase + this._listAllUpload);
-  }
-
-  public deleteUploadedAnswer(id: string) {
-    return this.http.get(this._apiBase + this._deleteUploadedAnswer + id);
-  }
 
 
-  public approveUploadedAnswer(id: any) {
-    return this.http.get(this._apiBase + this._approveUploadedAnswer + id);
-  }
 
-  public checkAuth(id: string) {
-    return this.http.get(this._apiBase + this._backEntry + id);
-  }
 
-  public getAllEntries() {
-    return this.http.get(this._apiBase + this._listAllEntries);
-  }
+
+
 
   public getOneRandomEntry() {
     return this.http.get(this._apiBase + this._getRandomEntry);
   }
 
-  public uploadAnswer(questionId: string, message: string, authorId: string) {
+  public uploadAnswer(answerId: string, message: string, authorId: string) {
     // console.log({message, authorId});
-    return this.http.put(this.uploadQuestionUrl(questionId), {message, authorId});
+    return this.http.put(this.uploadAnswerUrl(answerId), {message, authorId});
   }
+
+  public uploadQuestion(text: string, authorId: string) {
+    // console.log({message, authorId});
+    console.log(`I'm here`);
+    console.log(this._apiBase + this._uploadQuestion)
+    return this.http.put(this._apiBase + this._uploadQuestion, {text, authorId});
+  }
+
 
   public UpvoteAnswer(answerId: string) {
     return this.http.get(this.UpVoteAnswerUrl(answerId));
@@ -89,4 +82,9 @@ export class DataService {
   public FindOneEntryById(questionId: string) {
     return this.http.get(this.FindOneEntryByIdUrl(questionId));
   }
+
+  public GetEntryCount() {
+    return this.http.get(this._apiBase + this._entryCount);
+  }
+
 }
