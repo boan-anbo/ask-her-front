@@ -43,6 +43,12 @@ export class UploadAnswer {
   };
 }
 
+export class UploadQuestion {
+  _id: string;
+  text: string;
+  authorId: string;
+}
+
 export class EntryCollection {
   entries: Entry[];
 }

@@ -22,15 +22,26 @@ textarea,input {
   color: white
 }
 
-#submit-button {
+#submit-button, #question-submit-button {
   margin-left: 30px;
+  color: #b1184c;
 }
 
-#inputId {
+#submit-button:disabled, #question-submit-button:disabled {
+  margin-left: 30px;
+  color: #4f5357;
+
+}
+
+#submit-button-icon, #submit-button-icon {
+  /*color: #b1184c;*/
+  /*font-size: 50%;*/
+}
+#inputId, #question-inputId {
   width: 50%;
   }
 
-#inputText {
+#inputText, #question-inputText {
   width: 110%;
   /*margin-right: 100px;*/
 }
@@ -65,10 +76,7 @@ textarea,input {
   font-size: 90%;
 }
 
-#submit-button-icon {
-  color: #b1184c;
-  /*font-size: 50%;*/
-}
+
 #no-answer {
   width: fit-content;
   text-align: center;
@@ -150,10 +158,14 @@ mat-card-subtitle {
 
 #app-title-span {
   position: absolute;
-  left: 15%;
+  left: 2%;
 }
 
-#app-title-name {
+#help-app-title-span {
+  margin-left: 15px
+}
+
+.app-title-name {
   color: #f44336;
 }
 
@@ -169,7 +181,7 @@ mat-card-header {
   font-size: 80%;
 }
 
-#app-title-icon {
+.app-title-icon {
   color: #b0bec5;
 }
 
@@ -194,11 +206,12 @@ mat-card-header {
   position: absolute;
   right: 5%;
 }
-#app-speech-span {
+#app-add-question-span {
   position: absolute;
-  right: 25%;
+  right: 15%;
   color: #b0bec5;
 }
+
 
 #help-card {
   max-width: 80%;
@@ -215,10 +228,10 @@ mat-card-header {
 }
 
 #help-card-icon {
-  color: #c2185b;
+  color: #b0bec5;
 }
 
-#help-card-name-tag {
+.help-card-name-tag {
   color: #f44336;
   font-weight: bold;
 }
@@ -228,6 +241,7 @@ mat-card-header {
 }
 #help-card-content {
   line-height: 120%;
+  font-size: 85%;
 }
 
 .history-nav-button {
@@ -238,3 +252,35 @@ mat-card-header {
   color: #b0bec5;
 }
 
+#app-add-question-open-button {
+  color: #f44336;
+}
+
+#app-add-question-cancel-button {
+  color: #cb312c;
+}
+
+
+
+.separator {
+  color: #b0bec5;
+}
+
+#help-app-title {
+
+}
+
+#no-jiang-hint {
+  color: #f44336;
+}
+
+#update-status {
+  font-size: 80%;
+  color: #b0bec5;
+  margin-left: 15px;
+
+}
+
+#total-entry-count {
+  color: white;
+}

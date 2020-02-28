@@ -3,20 +3,20 @@
   <mat-grid-tile id="question-tile" rowspan="5">
     <mat-grid-tile-header color="accent">
       <span id="app-title-span">
-        <span id="app-title-name">江山娇</span>
+        <span class="app-title-name">江山娇</span>
         <span>可以回答</span>
-      <mat-icon id="app-title-icon">speaker_notes</mat-icon>
+        <mat-icon class="app-title-icon">speaker_notes</mat-icon> <span id="update-status">  (已收录<span id="total-entry-count">{{ totalEntryCount }}</span>个问题)</span>
       </span>
-<!--      <span id="app-speech-span">-->
-<!--        <button mat-icon-button id="app-speech-mute-button" *ngIf="!this.speechModeOn; else speechOn" (click)="ToggleSpeech()">-->
-<!--        朗读关<mat-icon id="app-speech-mute-icon" >volume_mute</mat-icon>-->
-<!--      </button>-->
-<!--        <ng-template #speechOn>-->
-<!--      <button mat-icon-button id="app-speech-unmute-button" (click)="ToggleSpeech()">-->
-<!--        朗读开<mat-icon id="app-speech-unmuteicon">volume_up</mat-icon>-->
-<!--      </button>-->
-<!--</ng-template>-->
-<!--      </span>-->
+      <span id="app-add-question-span">
+        <button mat-icon-button id="app-add-question-open-button" class='app-add-question-button' *ngIf="!this.addingQuestionModeOn; else addQuestionModeOn" (click)="ToggleAddQuestionMode()">
+        <mat-icon class="app-add-question-icon">add_circle</mat-icon>
+      </button>
+        <ng-template #addQuestionModeOn>
+      <button mat-icon-button id="app-add-question-cancel-button" (click)="ToggleAddQuestionMode()">
+        <mat-icon class="app-add-question-icon">cancel</mat-icon>
+      </button>
+</ng-template>
+      </span>
       <span id="app-help-span">
         <button mat-icon-button id="app-help-button" (click)="ToggleHelp()">
         <mat-icon id="app-help-icon">help</mat-icon>
@@ -24,7 +24,32 @@
       </span>
 
     </mat-grid-tile-header>
-    <mat-card>
+
+
+    <form class="input-form" ngNativeValidate  [formGroup]="questionInputForm" (ngSubmit)="QuestionSubmitHandler()" *ngIf="addingQuestionModeOn; else questionCard">
+      <mat-form-field class="input-full-width" id="question-inputText">
+        <mat-label>我想说对江山娇说：</mat-label>
+        <textarea matInput #addQuestionMessage maxlength="140" placeholder='不用自己输入"江山娇"的字样' autocomplete="off" cdkTextareaAutosize #autosize="cdkTextareaAutosize"cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" formControlName="text"></textarea>
+        <mat-hint align="start">不用再输入“<span id="no-jiang-hint">江山娇</span>”字样</mat-hint>
+        <mat-hint align="middle"><strong></strong> </mat-hint>
+        <mat-hint  align="end">{{ addQuestionMessage.value.length}} / 140字</mat-hint>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="input-full-width" id="question-inputId">
+        <mat-label>我的ID</mat-label>
+        <input matInput #addQuestionId maxlength="20" autocomplete="on" formControlName="authorId">
+        <mat-hint align="start"><strong></strong> </mat-hint>
+        <mat-hint  align="end">{{addQuestionId.value.length}} / 20字符</mat-hint>
+      </mat-form-field>
+
+      <button id="question-submit-button" mat-stroked-button [disabled]="this.questionInputSubmitLoading || addQuestionMessage.value.length === 0 || addQuestionId.value.length === 0 || this.IsTextEmpty(addQuestionMessage.value)">
+        <mat-icon id="question-submit-button-icon">send</mat-icon>
+      </button>
+
+    </form>
+
+    <ng-template #questionCard>
+    <mat-card >
 
     <mat-card-header *ngIf="currentEntry.question.text else noCurrentEntry">
 
@@ -41,6 +66,7 @@
       </mat-card-actions>
 
     </mat-card>
+      </ng-template>
 
     <ng-template #noCurrentEntry>
       载入中...
@@ -51,12 +77,15 @@
 
   </mat-grid-tile>
 
+<!--    frame for hiding during adding question -->
+
 
   <mat-grid-tile rowspan="1">
-<button mat-icon-button class="history-nav-button" id="previous-history-entry" (click)="PreviousQuestion()" [disabled]="ReachedEndOfHistory()"><mat-icon>arrow_back</mat-icon></button>
+<button mat-icon-button class="history-nav-button" id="previous-history-entry" (click)="PreviousQuestion()" [disabled]="ReachedEndOfHistory() || addingQuestionModeOn || writingAnswer"><mat-icon>arrow_back</mat-icon></button>
 
-    <button mat-fab id="next-answer" color="warn"  (click)="NextQuestion()" [disabled]="loadingEntry || writingAnswer"><mat-icon>face</mat-icon></button>
-        <button mat-icon-button class="history-nav-button" id="subsequent-history-entry" (click)="SubsequentQuestion()" [disabled]="!this.historyModeOn"><mat-icon>arrow_forward</mat-icon></button>
+    <button mat-fab id="next-answer" color="warn"  (click)="NextQuestion()" [disabled]="loadingEntry || writingAnswer || addingQuestionModeOn"><mat-icon>face</mat-icon></button>
+
+    <button mat-icon-button class="history-nav-button" id="subsequent-history-entry" (click)="SubsequentQuestion()" [disabled]="!this.historyModeOn || addingQuestionModeOn || writingAnswer"><mat-icon>arrow_forward</mat-icon></button>
 
   </mat-grid-tile>
 
@@ -98,9 +127,9 @@
 
 
   <ng-template #writingPanel>
-  <mat-grid-tile id="writing-tile"  rowspan="4">
+  <mat-grid-tile id="writing-tile" rowspan="4">
 
-<!--    <mat-grid-tile-header>Header</mat-grid-tile-header>-->
+  <!--    <mat-grid-tile-header>Header</mat-grid-tile-header>-->
 
     <form class="input-form" ngNativeValidate  [formGroup]="inputForm" (ngSubmit)="submitHandler()">
       <mat-form-field class="input-full-width" id="inputText">
@@ -111,13 +140,13 @@
       </mat-form-field>
       <br>
       <mat-form-field class="input-full-width" id="inputId">
-        <mat-label>ID</mat-label>
+        <mat-label>我的ID</mat-label>
         <input matInput #id maxlength="20" autocomplete="on" formControlName="authorId" value="江山娇">
         <mat-hint align="start"><strong></strong> </mat-hint>
         <mat-hint  align="end">{{id.value.length}} / 20字符</mat-hint>
       </mat-form-field>
 
-      <button id="submit-button" mat-stroked-button [disabled]="this.inputSubmitLoading">
+      <button id="submit-button" mat-stroked-button [disabled]="this.inputSubmitLoading || message.value.length === 0 || id.value.length === 0">
         <mat-icon id="submit-button-icon">send</mat-icon>
       </button>
 
@@ -137,31 +166,43 @@
 <!--      <span #endPoint></span>-->
     </button>
     <ng-template #cancelButton>
-    <button mat-flat-button color="accent" id="cancel-writing-button" (click)="ExitWritingMode()"  [disabled]="!writingAnswer"><mat-icon>cancel</mat-icon></button>
+    <button mat-flat-button color="accent" id="cancel-writing-button" (click)="ExitWritingMode()"  [disabled]="!writingAnswer || addingQuestionModeOn"><mat-icon>cancel</mat-icon></button>
     </ng-template>
   </mat-grid-tile>
-  <span #endPoint></span>
   </span>
+
+
 
   <ng-template #helpPage id="help-template">
     <mat-card id="help-card">
-      <mat-card-header><mat-icon id="help-card-icon">help</mat-icon></mat-card-header>
+      <mat-card-header>
+      <button mat-icon-button (click)="ToggleHelp()">
+        <mat-icon id="help-card-icon" >help</mat-icon>
+      </button>
+        <span id="help-app-title-span">
+        <span class="app-title-name">江山娇</span>
+        <span>可以回答</span>
+      <mat-icon class="app-title-icon">speaker_notes</mat-icon>
+      </span>
+      </mat-card-header>
       <mat-card-content>
       <span id="help-card-content">
        <br>
         <p>一份不会404的中国女性经验的永久记录</p>
       <p>原始问题来自微博用户“为什么它永无止境”的一条已经被删除的微博下方评论</p>
         <p>经过整理，共得3735条问题</p>
-        <br>
-        <p>按中间的红色按钮随机抽取一个问题</p>
-        <p>按APP下方的按钮添加你的回答</p>
-        <p>你的回答会经过女性志愿者审核</p>
+        <p class="separator">*</p>
+        <p>按中间的红色 <mat-icon>face</mat-icon> 随机抽取一个问题</p>
+        <p>按APP下方的 <mat-icon>speaker_notes</mat-icon> 添加你的回答</p>
+        <p>按右上方的 <mat-icon class="app-add-question-icon">add_circle</mat-icon> 添加你想对江山娇说的话</p>
+        <p class="separator">*</p>
+        <p>你的提问和回答会经过女性志愿者审核</p>
         <p>不会记录你的个人信息。可以匿名，也可以用id</p>
         <p>所有问题和回答数据会定期公开，地址会在这里公布</p>
-        <br>
+        <p class="separator">*</p>
         <p>希望这是一个提高大众女性权利意识的契机</p>
-        <p>希望未来的<span id="help-card-name-tag">江山娇</span>不需要再回答这些问题</p>
-        <br>
+        <p>希望未来的<span class="help-card-name-tag">江山娇</span>不需要再回答这些问题</p>
+
         <p>2020/2/26</p>
         <br>
         <span id="help-shortcut">
