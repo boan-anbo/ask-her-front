@@ -9,6 +9,7 @@ export class DataService {
 
 
 
+
   constructor(private http: HttpClient) { }
 
   // tslint:disable-next-line:variable-name
@@ -29,7 +30,7 @@ export class DataService {
   private _uploadQuestion = '/uploadquestion/upload'
   // tslint:disable-next-line:variable-name
   private _entryCount = '/entry/count'
-
+  private _answersCount = '/entry/answers/count';
 
 
   private UpVoteAnswerUrl(answerId: string): string {
@@ -87,4 +88,7 @@ export class DataService {
     return this.http.get(this._apiBase + this._entryCount);
   }
 
+  public GetAnswersCount() {
+    return this.http.get(this._apiBase + this._answersCount);
+  }
 }
