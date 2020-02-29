@@ -5,7 +5,7 @@
       <span id="app-title-span">
         <span class="app-title-name">江山娇</span>
         <span>可以回答</span>
-        <mat-icon class="app-title-icon">speaker_notes</mat-icon> <span id="update-status">  (已收录<span id="total-entry-count">{{ totalEntryCount }}</span>个问题)</span>
+        <mat-icon class="app-title-icon">speaker_notes</mat-icon> <span id="update-status">  (<span class="total-entry-count">{{ totalEntryCount ? totalAnswersCount : '?' }}</span>个问题 | <span class="total-entry-count">{{ totalAnswersCount ? totalAnswersCount : '?' }}</span>个回答)</span>
       </span>
       <span id="app-add-question-span">
         <button mat-icon-button id="app-add-question-open-button" class='app-add-question-button' *ngIf="!this.addingQuestionModeOn; else addQuestionModeOn" (click)="ToggleAddQuestionMode()">

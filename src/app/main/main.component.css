@@ -281,6 +281,6 @@ mat-card-header {
 
 }
 
-#total-entry-count {
+.total-entry-count {
   color: white;
 }

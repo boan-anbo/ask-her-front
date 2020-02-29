@@ -64,6 +64,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   //     console.log(data);
   //   });
   // }
+  totalAnswersCount: number;
 
 
 
@@ -441,6 +442,9 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataService.GetEntryCount().subscribe((data: string) => {
       this.totalEntryCount = parseInt(data);
     });
+    this.dataService.GetAnswersCount().subscribe(((data: string) => {
+      this.totalAnswersCount = parseInt(data);
+    }))
   }
 
 }
