@@ -141,7 +141,7 @@ mat-card-title {
   /*color: #E91E63;*/
   font-size: 80%;
   color: #f44336;
-  max-width: 95%;
+  /*max-width: 95%;*/
   min-width: 200px;
   margin-left: 0;
   margin-rgith: 0;
@@ -275,12 +275,30 @@ mat-card-header {
 }
 
 #update-status {
-  font-size: 80%;
+  font-size: 1.5vh;
   color: #b0bec5;
-  margin-left: 15px;
+  margin-left: 10px;
 
 }
 
 .total-entry-count {
   color: white;
+}
+
+
+#slider-footer {
+  /*background: transparent;*/
+  text-align: center;
+  overflow: visible;
+}
+
+#nav-slider {
+  width: 70vw;
+  margin: auto;
+  margin-bottom: 0;
+
+}
+
+#face-grid {
+  overflow: visible;
 }
