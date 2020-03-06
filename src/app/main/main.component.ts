@@ -67,6 +67,27 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
   totalAnswersCount: number;
 
 
+  autoTicks = false;
+  disabled = false;
+  max = this.currentEntry.answers.length;
+  min = 0;
+  showTicks = true;
+  step = 1;
+  thumbLabel = true;
+  value = 0;
+  vertical = false;
+  tickInterval = 1;
+
+  getSliderTickInterval(): number | 'auto' {
+    if (this.showTicks) {
+      return this.autoTicks ? 'auto' : this.tickInterval;
+    }
+
+    return 0;
+  }
+
+
+
 
   ngOnInit(): void {
     this.LoadRandomQuestionAndPushToPool();

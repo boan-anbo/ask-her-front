@@ -80,7 +80,7 @@
 <!--    frame for hiding during adding question -->
 
 
-  <mat-grid-tile rowspan="1">
+  <mat-grid-tile rowspan="1" id="face-grid">
 <button mat-icon-button class="history-nav-button" id="previous-history-entry" (click)="PreviousQuestion()" [disabled]="ReachedEndOfHistory() || addingQuestionModeOn || writingAnswer"><mat-icon>arrow_back</mat-icon></button>
 
     <button mat-fab id="next-answer" color="warn"  (click)="NextQuestion()" [disabled]="loadingEntry || writingAnswer || addingQuestionModeOn"><mat-icon>face</mat-icon></button>
@@ -111,7 +111,22 @@
         <button mat-button (click)="IUpVoteThat()" [disabled]="this.currentEntry.answers[this.answerPointer].answerId === ''"><span><mat-icon id="favorite">favorite_border</mat-icon> </span> <span id="upVoteNumber">{{ this.currentEntry.answers[this.answerPointer].upvote}} </span></button>
       </mat-card-actions>
 
+
     </mat-card>
+
+<!--    <mat-grid-tile-footer id="slider-footer">-->
+<!--         <mat-slider-->
+<!--           id="nav-slider"-->
+<!--           [max]="max"-->
+<!--           [min]="min"-->
+<!--           [step]="step"-->
+<!--           [thumbLabel]="thumbLabel"-->
+<!--           [tickInterval]="getSliderTickInterval()"-->
+<!--           [(ngModel)]="value"-->
+<!--         >-->
+<!--    </mat-slider>-->
+
+<!--    </mat-grid-tile-footer>-->
 
 
     <ng-template #noAnswer><p id="no-answer">无人回答<br>按下方按钮添加你的回答<br>可能需要向上滑动</p></ng-template>
